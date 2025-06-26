@@ -1,18 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../api_key.dart';
 
 class YouTubeCommentStream {
   YouTubeCommentStream() : _controller = StreamController<ChatMessage>();
 
-  Future<void> initialize() async {
-    final liveChatId = await _getLiveChatId(videoId);
-
-    if (liveChatId != null) {
-      Timer.periodic(const Duration(seconds: 5), (timer) async {
-        await _getChatMessages(liveChatId);
-      });
-    }
+  void initialize() {
+    _getLiveChatId(videoId).then(
+      (String? liveChatId) {
+        if (liveChatId != null) {
+          Timer.periodic(const Duration(seconds: 5), (timer) async {
+            await _getChatMessages(liveChatId);
+          });
+        }
+      },
+    );
   }
 
   /// Retrieves the liveChatId for a given video ID.
@@ -49,6 +52,7 @@ class YouTubeCommentStream {
             final message = item['snippet']['displayMessage'];
             // print('$author: $message :: $profileImage');
             final chatMessage = ChatMessage(
+              id: messageId,
               username: author,
               photo: profileImage,
               message: message,
@@ -59,16 +63,21 @@ class YouTubeCommentStream {
         }
       }
     } else {
+      // ignore: avoid_print
       print('Failed to fetch chat messages: ${response.body}');
     }
   }
 
   /// This is the YouTube Id from the Url.
-  static const videoId = 'K-duxcUpUrQ';
+  static const videoId = 'cz8Z2DT7SMw';
 
   final StreamController<ChatMessage> _controller;
 
   Stream<ChatMessage> get stream => _controller.stream;
+
+  close() {
+    _controller.close();
+  }
 }
 
 class ChatMessage {
@@ -76,15 +85,14 @@ class ChatMessage {
     required this.username,
     required this.photo,
     required this.message,
+    required this.id,
   });
 
+  final String id;
   final String username;
   final String photo;
   final String message;
 }
-
-// Your API key from the Google Cloud Console.
-const String apiKey = 'AIzaSyC1-zivV3o4iTguYVhlXRL1_WdH9Xq5Bq0';
 
 // The base URL for the YouTube Data API.
 const String youtubeApiBaseUrl = 'https://www.googleapis.com/youtube/v3';

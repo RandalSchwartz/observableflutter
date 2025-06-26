@@ -1,20 +1,27 @@
 // A widget that displays a message in a chat bubble with a tail.
-import 'package:app/youtube_comment_stream.dart';
+import 'package:app/screens/chat/chat.dart';
+import 'package:app/screens/chat/data/youtube_comment_stream.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ChatMessageWidget extends StatelessWidget {
-  const ChatMessageWidget(this.message, {super.key});
+  const ChatMessageWidget(this.message, {required this.isSelected, super.key});
 
   final ChatMessage message;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
+    if (message.id == 'LCC.EhwKGkNLN19xTlBRajQ0REZRZkR3Z1FkZy1VYVBB') {
+      print('isSelected: $isSelected');
+    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _ChatBubble(
           authorName: message.username,
           message: message.message,
+          isSelected: isSelected,
           authorAvatar: CircleAvatar(
             backgroundColor: Colors.deepPurple,
             child: Image.network(message.photo),
@@ -27,25 +34,49 @@ class ChatMessageWidget extends StatelessWidget {
 }
 
 /// It includes an author avatar, name, and the message content.
-class _ChatBubble extends StatelessWidget {
+class _ChatBubble extends StatefulWidget {
   final String authorName;
   final String message;
   final Widget authorAvatar;
   final Color bubbleColor;
+  final bool isSelected;
 
   const _ChatBubble({
-    Key? key,
     required this.authorName,
     required this.message,
     required this.authorAvatar,
+    required this.isSelected,
     this.bubbleColor = Colors.grey,
-  }) : super(key: key);
+  });
+
+  @override
+  State<_ChatBubble> createState() => _ChatBubbleState();
+}
+
+class _ChatBubbleState extends State<_ChatBubble> {
+  // @override
+  // void initState() {
+  //   if (widget.isSelected) {
+  //     print('How was this widget selected on its first render?');
+  //   }
+  //   super.initState();
+  // }
+
+  // @override
+  // void didUpdateWidget(covariant _ChatBubble oldWidget) {
+  //   if (widget.isSelected && !oldWidget.isSelected) {
+  //     _saveImage();
+  //   }
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
+    Widget child = CustomPaint(
       // The CustomPainter is what draws the bubble shape.
-      painter: BubblePainter(color: bubbleColor),
+      painter: BubblePainter(
+        color: widget.isSelected ? widget.bubbleColor : Colors.grey,
+      ),
       child: Container(
         padding: const EdgeInsets.only(
           left: 48, // Space for the tail and avatar
@@ -57,7 +88,7 @@ class _ChatBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            authorAvatar,
+            widget.authorAvatar,
             const SizedBox(width: 12),
             // The content of the bubble
             Flexible(
@@ -67,7 +98,7 @@ class _ChatBubble extends StatelessWidget {
                 children: [
                   // Author's Name
                   Text(
-                    authorName,
+                    widget.authorName,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -84,7 +115,7 @@ class _ChatBubble extends StatelessWidget {
                   const SizedBox(height: 4),
                   // Message Text
                   Text(
-                    message,
+                    widget.message,
                     style: const TextStyle(
                       fontSize: 15,
                       color: Colors.white,
@@ -104,6 +135,12 @@ class _ChatBubble extends StatelessWidget {
         ),
       ),
     );
+
+    if (widget.isSelected) {
+      child = ImageSaver(child: child);
+    }
+
+    return child;
   }
 }
 

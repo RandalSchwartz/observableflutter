@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 class ImageSaver extends StatefulWidget {
   final Widget child;
 
-  const ImageSaver({Key? key, required this.child}) : super(key: key);
+  const ImageSaver({super.key, required this.child});
 
   @override
   State<ImageSaver> createState() => _ImageSaverState();
@@ -20,7 +20,6 @@ class ImageSaver extends StatefulWidget {
 class _ImageSaverState extends State<ImageSaver> {
   // A GlobalKey is used to uniquely identify the widget that we want to capture.
   final GlobalKey _globalKey = GlobalKey();
-  bool _isLoading = false;
 
   late Directory imagesFolder;
   late String imagePath;
@@ -28,30 +27,33 @@ class _ImageSaverState extends State<ImageSaver> {
 
   @override
   void initState() {
-    _checkForInitialFile();
+    _checkForInitialFile().then((_) {
+      _saveImage();
+    });
     super.initState();
   }
 
-  void _checkForInitialFile() async {
+  Future<void> _checkForInitialFile() async {
     imagesFolder = await getApplicationDocumentsDirectory();
     imagePath = '${imagesFolder.path}/image.png';
     if (await File(imagePath).exists()) {
-      print('file exists');
-      setState(() {
-        _fileExists = true;
-      });
-    } else {
+      _fileExists = true;
       print('initial file does not exist');
     }
   }
 
+  @override
+  void deactivate() {
+    _clearImage();
+    super.deactivate();
+  }
+
   Future<void> _clearImage() async {
+    if (!_fileExists) return;
     final file = File(imagePath);
     if (await file.exists()) {
       await file.delete();
-      setState(() {
-        _fileExists = false;
-      });
+      _fileExists = false;
     } else {
       print('Tricksy hobbitses, they tooks the images from me!');
     }
@@ -59,10 +61,6 @@ class _ImageSaverState extends State<ImageSaver> {
 
   /// Captures the widget identified by [_globalKey] as an image and saves it to the device.
   Future<void> _saveImage() async {
-    setState(() {
-      _isLoading = true;
-    });
-
     try {
       // 2. Find the RenderObject of the widget to be captured.
       // The RepaintBoundary is crucial for this to work.
@@ -93,11 +91,8 @@ class _ImageSaverState extends State<ImageSaver> {
     } catch (e) {
       _showSnackBar('Error saving image: $e');
     } finally {
-      setState(() {
-        _fileExists = true;
-        _isLoading = false;
-        _showSnackBar('Image saved successfully to: $imagePath');
-      });
+      _fileExists = true;
+      _showSnackBar('Image saved successfully to: $imagePath');
     }
   }
 
@@ -119,38 +114,6 @@ class _ImageSaverState extends State<ImageSaver> {
         // This is the widget that will be captured. We wrap it in a
         // RepaintBoundary and associate it with our GlobalKey.
         RepaintBoundary(key: _globalKey, child: widget.child),
-        const SizedBox(height: 24),
-        if (_isLoading)
-          const Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
-            child: CircularProgressIndicator(),
-          )
-        else
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              textStyle: const TextStyle(fontSize: 16),
-            ),
-            icon: const Icon(Icons.save_alt_outlined),
-            label: const Text('Save as Image'),
-            onPressed: _saveImage,
-          ),
-        if (_fileExists) ...[
-          SizedBox(height: 20),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              textStyle: const TextStyle(fontSize: 16, color: Colors.white),
-              backgroundColor: Colors.red,
-            ),
-            icon: const Icon(Icons.delete_forever, color: Colors.white),
-            label: const Text(
-              'Clear image',
-              style: TextStyle(fontSize: 16, color: Colors.white),
-            ),
-            onPressed: _clearImage,
-          ),
-        ],
       ],
     );
   }
