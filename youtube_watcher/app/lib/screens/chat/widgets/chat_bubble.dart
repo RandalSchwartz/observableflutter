@@ -12,9 +12,6 @@ class ChatMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (message.id == 'LCC.EhwKGkNLN19xTlBRajQ0REZRZkR3Z1FkZy1VYVBB') {
-      print('isSelected: $isSelected');
-    }
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -54,22 +51,6 @@ class _ChatBubble extends StatefulWidget {
 }
 
 class _ChatBubbleState extends State<_ChatBubble> {
-  // @override
-  // void initState() {
-  //   if (widget.isSelected) {
-  //     print('How was this widget selected on its first render?');
-  //   }
-  //   super.initState();
-  // }
-
-  // @override
-  // void didUpdateWidget(covariant _ChatBubble oldWidget) {
-  //   if (widget.isSelected && !oldWidget.isSelected) {
-  //     _saveImage();
-  //   }
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
   @override
   Widget build(BuildContext context) {
     Widget child = CustomPaint(

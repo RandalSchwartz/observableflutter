@@ -69,7 +69,7 @@ class YouTubeCommentStream {
   }
 
   /// This is the YouTube Id from the Url.
-  static const videoId = 'cz8Z2DT7SMw';
+  static const videoId = 'pK2itkQgMfc';
 
   final StreamController<ChatMessage> _controller;
 

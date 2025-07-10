@@ -19,6 +19,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LayoutBuilder(
@@ -28,22 +34,6 @@ class _ChatScreenState extends State<ChatScreen> {
             builder: (context, state) {
               return Row(
                 children: [
-                  // SizedBox(
-                  //   height: constraints.maxHeight,
-                  //   width: constraints.maxWidth / 2,
-                  //   child: Center(
-                  //     child: Padding(
-                  //       padding: EdgeInsets.all(20),
-                  //       child: ImageSaver(
-                  //         child: (selectedMessageIndex != null)
-                  //             ? ChatMessageWidget(
-                  //                 _chatMessages[selectedMessageIndex!],
-                  //               )
-                  //             : Container(),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   SizedBox(
                     height: constraints.maxHeight,
                     width: constraints.maxWidth,

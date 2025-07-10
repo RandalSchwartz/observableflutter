@@ -1,7 +1,11 @@
-import 'package:app/screens/chat/chat_screen.dart';
-import 'package:flutter/material.dart';
+import 'package:app/dependency_injection.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setUpDI();
   runApp(const MainApp());
 }
 
@@ -10,8 +14,12 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: ChatScreen(),
+    return ShadcnApp.router(
+      theme: ThemeData(
+        colorScheme: ColorSchemes.darkGreen(),
+        radius: 0.5,
+      ),
+      routerConfig: GetIt.I<GoRouter>(),
     );
   }
 }
