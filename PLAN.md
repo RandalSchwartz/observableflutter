@@ -1,8 +1,8 @@
 ## Progress Checklist
 
-- [ ] Step 1: Project Initialization and Dependency Setup
-- [ ] Step 2: Initial Setup Screen UI
-- [ ] Step 3: Credentials Storage and Logic
+- [x] Step 1: Project Initialization and Dependency Setup
+- [x] Step 2: Initial Setup Screen UI
+- [x] Step 3: Credentials Storage and Logic
 - [ ] Step 4: Chat Screen UI and Navigation
 - [ ] Step 5: YouTube Service and Data Model
 - [ ] Step 6: State Management for Chat Screen

@@ -1,0 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:youtube_watcher/src/features/initial_setup/presentation/initial_setup_screen.dart';
+
+final goRouter = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return const InitialSetupScreen();
+      },
+    ),
+  ],
+);
