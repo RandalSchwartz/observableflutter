@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_controller.dart';
+import 'package:youtube_watcher/src/features/chat/presentation/widgets/chat_bubble.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -15,18 +16,14 @@ class ChatScreen extends ConsumerWidget {
       ),
       body: chatMessages.when(
         data: (messages) {
-          return ListView.builder(
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(message.profileImageUrl),
-                ),
-                title: Text(message.author),
-                subtitle: Text(message.message),
-              );
+              return ChatBubble(message: message);
             },
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

@@ -6,7 +6,7 @@
 - [x] Step 4: Chat Screen UI and Navigation
 - [x] Step 5: YouTube Service and Data Model
 - [x] Step 6: State Management for Chat Screen
-- [ ] Step 7: Custom Paint Widgets for Chat Bubbles
+- [x] Step 7: Custom Paint Widgets for Chat Bubbles
 - [ ] Step 8: Final Touches and Error Handling
 
 # Development Plan: YouTube Live Chat Viewer
