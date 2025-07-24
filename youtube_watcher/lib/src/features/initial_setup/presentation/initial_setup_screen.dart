@@ -8,15 +8,14 @@ class InitialSetupScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sharedPreferencesAsync = ref.watch(sharedPreferencesProvider);
+    final credentialsProvider = ref.watch(credentialsRepositoryProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('YouTube Live Chat Viewer'),
       ),
-      body: sharedPreferencesAsync.when(
-        data: (prefs) {
-          final credentialsRepository = ref.watch(credentialsRepositoryProvider);
+      body: credentialsProvider.when(
+        data: (credentialsRepository) {
           final apiKeyController =
               TextEditingController(text: credentialsRepository.getApiKey() ?? '');
           final videoIdController =

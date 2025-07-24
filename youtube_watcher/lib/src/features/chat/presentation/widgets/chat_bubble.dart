@@ -5,15 +5,21 @@ class ChatBubble extends StatelessWidget {
   const ChatBubble({
     super.key,
     required this.message,
+    this.isSelected = false,
   });
 
   final ChatMessage message;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final color = isSelected
+        ? theme.colorScheme.primaryContainer
+        : theme.colorScheme.surfaceContainerHighest;
+
     return CustomPaint(
-      painter: _BubblePainter(color: theme.colorScheme.surfaceContainerHighest),
+      painter: _BubblePainter(color: color),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
         child: Row(

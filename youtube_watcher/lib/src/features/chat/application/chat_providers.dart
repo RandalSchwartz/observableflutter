@@ -12,8 +12,8 @@ http.Client httpClient(Ref ref) {
 }
 
 @riverpod
-YouTubeService youTubeService(Ref ref) {
-  final credentialsRepository = ref.watch(credentialsRepositoryProvider);
+Future<YouTubeService> youTubeService(Ref ref) async {
+  final credentialsRepository = await ref.watch(credentialsRepositoryProvider.future);
   final apiKey = credentialsRepository.getApiKey()!;
   final videoId = credentialsRepository.getVideoId()!;
   final client = ref.watch(httpClientProvider);

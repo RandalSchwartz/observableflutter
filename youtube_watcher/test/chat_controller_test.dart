@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_controller.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_providers.dart';
-import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 import 'package:youtube_watcher/src/features/chat/data/youtube_service.dart';
 
 class MockYouTubeService extends Mock implements YouTubeService {}
@@ -15,50 +14,37 @@ void main() {
 
     setUp(() {
       mockYouTubeService = MockYouTubeService();
+      when(() => mockYouTubeService.getChatMessages())
+          .thenAnswer((_) async => []);
       container = ProviderContainer(
         overrides: [
-          youTubeServiceProvider.overrideWithValue(mockYouTubeService),
+          youTubeServiceProvider.overrideWith((ref) async => mockYouTubeService),
         ],
       );
     });
 
-    test('initial state is loading', () async {
-      when(() => mockYouTubeService.getChatMessages()).thenAnswer(
-        (_) async => [
-          const ChatMessage(
-            id: '1',
-            author: 'author',
-            message: 'message',
-            profileImageUrl: 'profileImageUrl',
-          ),
-        ],
-      );
-
-      final controller = container.read(chatControllerProvider.notifier);
-      expect(
-        await controller.build(),
-        isA<List<ChatMessage>>(),
-      );
+    tearDown(() {
+      container.dispose();
     });
 
-    test('getChatMessages updates the state', () async {
-      when(() => mockYouTubeService.getChatMessages()).thenAnswer(
-        (_) async => [
-          const ChatMessage(
-            id: '1',
-            author: 'author',
-            message: 'message',
-            profileImageUrl: 'profileImageUrl',
-          ),
-        ],
-      );
-
+    test('initial state has loading messages', () {
       final controller = container.read(chatControllerProvider.notifier);
-      await controller.getChatMessages();
-      final result = await container.read(chatControllerProvider.future);
+      final initialState = controller.build();
+      expect(initialState.messages, isA<AsyncLoading>());
+      expect(initialState.selectedMessageId, isNull);
+    });
 
-      expect(result, isA<List<ChatMessage>>());
-      expect(result.length, 1);
+    test('selectMessage updates the selected message id', () {
+      final controller = container.read(chatControllerProvider.notifier);
+      controller.selectMessage('test-id');
+      expect(container.read(chatControllerProvider).selectedMessageId, 'test-id');
+    });
+
+    test('selecting the same message twice deselects it', () {
+      final controller = container.read(chatControllerProvider.notifier);
+      controller.selectMessage('test-id');
+      controller.selectMessage('test-id');
+      expect(container.read(chatControllerProvider).selectedMessageId, isNull);
     });
   });
 }

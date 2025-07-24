@@ -11,10 +11,7 @@ Future<SharedPreferences> sharedPreferences(Ref ref) {
 }
 
 @riverpod
-CredentialsRepository credentialsRepository(Ref ref) {
-  final prefs = ref.watch(sharedPreferencesProvider).value;
-  if (prefs == null) {
-    throw Exception('SharedPreferences not initialized');
-  }
+Future<CredentialsRepository> credentialsRepository(Ref ref) async {
+  final prefs = await ref.watch(sharedPreferencesProvider.future);
   return CredentialsRepository(prefs);
 }

@@ -1,20 +1,73 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_providers.dart';
 import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 
 part 'chat_controller.g.dart';
 
+class ChatState {
+  ChatState({
+    this.messages = const AsyncValue.loading(),
+    this.selectedMessageId,
+  });
+
+  final AsyncValue<List<ChatMessage>> messages;
+  final String? selectedMessageId;
+
+  ChatState copyWith({
+    AsyncValue<List<ChatMessage>>? messages,
+    String? selectedMessageId,
+    bool deselect = false,
+  }) {
+    return ChatState(
+      messages: messages ?? this.messages,
+      selectedMessageId: deselect ? null : selectedMessageId ?? this.selectedMessageId,
+    );
+  }
+}
+
 @riverpod
 class ChatController extends _$ChatController {
+  Timer? _timer;
+
   @override
-  Future<List<ChatMessage>> build() async {
-    final youTubeService = ref.watch(youTubeServiceProvider);
-    return youTubeService.getChatMessages();
+  ChatState build() {
+    log('ChatController build()');
+    // When the provider is destroyed, cancel the timer
+    ref.onDispose(() {
+      log('ChatController disposed, cancelling timer.');
+      _timer?.cancel();
+    });
+
+    // Fetch initial messages
+    _fetchChatMessages();
+
+    // Start polling for messages
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      log('Timer fired! Fetching messages.');
+      _fetchChatMessages();
+    });
+
+    return ChatState();
   }
 
-  Future<void> getChatMessages() async {
-    final youTubeService = ref.watch(youTubeServiceProvider);
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() => youTubeService.getChatMessages());
+  Future<void> _fetchChatMessages() async {
+    log('Fetching chat messages...');
+    // Reading the provider's future which will be handled by the UI.
+    final youTubeService = await ref.read(youTubeServiceProvider.future);
+    final newState = await AsyncValue.guard(() => youTubeService.getChatMessages());
+    state = state.copyWith(messages: newState);
+    log('State updated with new messages.');
+  }
+
+  void selectMessage(String messageId) {
+    if (state.selectedMessageId == messageId) {
+      // If the same message is tapped again, deselect it.
+      state = state.copyWith(deselect: true);
+    } else {
+      state = state.copyWith(selectedMessageId: messageId);
+    }
   }
 }

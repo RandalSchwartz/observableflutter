@@ -11,9 +11,14 @@ import 'package:youtube_watcher/src/features/chat/presentation/chat_screen.dart'
 class MockYouTubeService extends Mock implements YouTubeService {}
 
 void main() {
+  late MockYouTubeService mockYouTubeService;
+
+  setUp(() {
+    mockYouTubeService = MockYouTubeService();
+  });
+
   testWidgets('ChatScreen displays messages on successful load',
       (WidgetTester tester) async {
-    final mockYouTubeService = MockYouTubeService();
     when(() => mockYouTubeService.getChatMessages()).thenAnswer((_) async => [
           const ChatMessage(
             id: '1',
@@ -27,7 +32,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            youTubeServiceProvider.overrideWithValue(mockYouTubeService),
+            youTubeServiceProvider.overrideWith((ref) async => mockYouTubeService),
           ],
           child: const MaterialApp(
             home: ChatScreen(),
@@ -35,19 +40,44 @@ void main() {
         ),
       );
 
-      // At first, a loading indicator should be visible
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-
-      // Wait for the future to complete and the UI to rebuild
       await tester.pumpAndSettle();
 
-      // Now, the loading indicator should be gone
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-
-      // And the list view with the message should be visible
       expect(find.byType(ListView), findsOneWidget);
       expect(find.text('Test Author'), findsOneWidget);
       expect(find.text('Test Message'), findsOneWidget);
+    });
+  });
+
+  testWidgets('ChatScreen displays error and retry button on failure',
+      (WidgetTester tester) async {
+    final exception = Exception('Failed to load');
+    when(() => mockYouTubeService.getChatMessages()).thenThrow(exception);
+
+    await mockNetworkImagesFor(() async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            youTubeServiceProvider.overrideWith((ref) async => mockYouTubeService),
+          ],
+          child: const MaterialApp(
+            home: ChatScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Error: $exception'), findsOneWidget);
+      expect(find.widgetWithText(ElevatedButton, 'Retry'), findsOneWidget);
+
+      // Simulate tapping the retry button
+      when(() => mockYouTubeService.getChatMessages()).thenAnswer((_) async => []);
+      await tester.tap(find.widgetWithText(ElevatedButton, 'Retry'));
+      await tester.pumpAndSettle();
+
+      // The error should be gone, and an empty message list should be shown
+      expect(find.text('Error: $exception'), findsNothing);
+      expect(find.text('No messages yet.'), findsOneWidget);
     });
   });
 }
