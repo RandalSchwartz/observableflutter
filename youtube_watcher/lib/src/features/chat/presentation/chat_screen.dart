@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_controller.dart';
 import 'package:youtube_watcher/src/features/chat/presentation/widgets/chat_bubble.dart';
 
+/// The screen that displays the live chat messages.
 class ChatScreen extends ConsumerWidget {
+  /// Creates the chat screen.
   const ChatScreen({super.key});
 
   @override

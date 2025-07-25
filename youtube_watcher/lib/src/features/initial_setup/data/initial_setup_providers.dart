@@ -5,11 +5,13 @@ import 'package:youtube_watcher/src/features/initial_setup/data/credentials_repo
 
 part 'initial_setup_providers.g.dart';
 
+/// Provides a [SharedPreferences] instance.
 @riverpod
 Future<SharedPreferences> sharedPreferences(Ref ref) {
   return SharedPreferences.getInstance();
 }
 
+/// Provides a [CredentialsRepository] instance.
 @riverpod
 Future<CredentialsRepository> credentialsRepository(Ref ref) async {
   final prefs = await ref.watch(sharedPreferencesProvider.future);

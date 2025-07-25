@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youtube_watcher/src/features/initial_setup/data/initial_setup_providers.dart';
 
+/// The screen where the user can enter their YouTube API key and video ID.
 class InitialSetupScreen extends ConsumerWidget {
+  /// Creates the initial setup screen.
   const InitialSetupScreen({super.key});
 
   @override
@@ -17,11 +19,11 @@ class InitialSetupScreen extends ConsumerWidget {
       body: credentialsProvider.when(
         data: (credentialsRepository) {
           final apiKeyController =
-              TextEditingController(text: credentialsRepository.getApiKey() ?? '');
+              TextEditingController(text: credentialsRepository.getApiKey());
           final videoIdController =
-              TextEditingController(text: credentialsRepository.getVideoId() ?? '');
+              TextEditingController(text: credentialsRepository.getVideoId());
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -44,8 +46,9 @@ class InitialSetupScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
-                    credentialsRepository.setApiKey(apiKeyController.text);
-                    credentialsRepository.setVideoId(videoIdController.text);
+                    credentialsRepository
+                      ..setApiKey(apiKeyController.text)
+                      ..setVideoId(videoIdController.text);
                     context.go('/chat');
                   },
                   child: const Text('Save'),

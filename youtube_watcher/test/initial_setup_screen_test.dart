@@ -22,7 +22,8 @@ void main() {
         ),
         GoRoute(
           path: '/chat',
-          builder: (context, state) => const Scaffold(body: Text('Chat Screen')),
+          builder: (context, state) =>
+              const Scaffold(body: Text('Chat Screen')),
         ),
       ],
     );
@@ -30,7 +31,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          sharedPreferencesProvider.overrideWith((ref) async => sharedPreferences),
+          sharedPreferencesProvider
+              .overrideWith((ref) async => sharedPreferences),
         ],
         child: MaterialApp.router(
           routerConfig: mockGoRouter,
@@ -65,8 +67,7 @@ void main() {
     expect(find.text('Chat Screen'), findsOneWidget);
 
     // Verify that the credentials were saved
-    final credentialsRepository =
-        CredentialsRepository(sharedPreferences);
+    final credentialsRepository = CredentialsRepository(sharedPreferences);
     expect(credentialsRepository.getApiKey(), 'test-key');
     expect(credentialsRepository.getVideoId(), 'test-id');
   });

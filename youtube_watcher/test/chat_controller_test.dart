@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_controller.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_providers.dart';
+import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 import 'package:youtube_watcher/src/features/chat/data/youtube_service.dart';
 
 class MockYouTubeService extends Mock implements YouTubeService {}
@@ -30,7 +31,7 @@ void main() {
     test('initial state has loading messages', () {
       final controller = container.read(chatControllerProvider.notifier);
       final initialState = controller.build();
-      expect(initialState.messages, isA<AsyncLoading>());
+      expect(initialState.messages, isA<AsyncLoading<List<ChatMessage>>>());
       expect(initialState.selectedMessageId, isNull);
     });
 
@@ -48,3 +49,4 @@ void main() {
     });
   });
 }
+

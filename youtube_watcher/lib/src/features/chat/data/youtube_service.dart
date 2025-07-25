@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 
+/// A service that interacts with the YouTube Data API.
 class YouTubeService {
+  /// Creates a YouTube service.
   YouTubeService(this._apiKey, this._videoId, this._client);
 
   final String _apiKey;
@@ -19,14 +21,18 @@ class YouTubeService {
     final response = await _client.get(url);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['items'] != null && data['items'].isNotEmpty) {
-        return data['items'][0]['liveStreamingDetails']['activeLiveChatId'];
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final items = data['items'] as List<dynamic>?;
+      if (items != null && items.isNotEmpty) {
+        final item = items[0] as Map<String, dynamic>;
+        final details = item['liveStreamingDetails'] as Map<String, dynamic>?;
+        return details?['activeLiveChatId'] as String?;
       }
     }
     return null;
   }
 
+  /// Fetches the chat messages from the YouTube live stream.
   Future<List<ChatMessage>> getChatMessages() async {
     final liveChatId = await _getLiveChatId();
     if (liveChatId == null) {
@@ -39,16 +45,21 @@ class YouTubeService {
     final response = await _client.get(url);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['items'] != null) {
+      final data = json.decode(response.body) as Map<String, dynamic>;
+      final items = data['items'] as List<dynamic>?;
+      if (items != null) {
         final messages = <ChatMessage>[];
-        for (final item in data['items']) {
+        for (final item in items) {
+          final itemMap = item as Map<String, dynamic>;
+          final authorDetails =
+              itemMap['authorDetails'] as Map<String, dynamic>;
+          final snippet = itemMap['snippet'] as Map<String, dynamic>;
           messages.add(
             ChatMessage(
-              id: item['id'],
-              author: item['authorDetails']['displayName'],
-              message: item['snippet']['displayMessage'],
-              profileImageUrl: item['authorDetails']['profileImageUrl'],
+              id: itemMap['id'] as String,
+              author: authorDetails['displayName'] as String,
+              message: snippet['displayMessage'] as String,
+              profileImageUrl: authorDetails['profileImageUrl'] as String,
             ),
           );
         }

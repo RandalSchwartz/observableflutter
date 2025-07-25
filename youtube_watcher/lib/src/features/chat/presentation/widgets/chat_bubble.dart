@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 
+/// A chat bubble that displays a chat message.
 class ChatBubble extends StatelessWidget {
+  /// Creates a chat bubble.
   const ChatBubble({
-    super.key,
     required this.message,
     this.isSelected = false,
+    super.key,
   });
 
+  /// The message to display.
   final ChatMessage message;
+
+  /// Whether the message is selected.
   final bool isSelected;
 
   @override

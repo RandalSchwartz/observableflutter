@@ -7,15 +7,22 @@ import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 
 part 'chat_controller.g.dart';
 
+/// The state of the chat screen.
 class ChatState {
+  /// Creates the state of the chat screen.
   ChatState({
     this.messages = const AsyncValue.loading(),
     this.selectedMessageId,
   });
 
+  /// The list of chat messages.
   final AsyncValue<List<ChatMessage>> messages;
+
+  /// The ID of the selected message.
   final String? selectedMessageId;
 
+  /// Creates a copy of the state with the given fields replaced with the new
+  /// values.
   ChatState copyWith({
     AsyncValue<List<ChatMessage>>? messages,
     String? selectedMessageId,
@@ -23,11 +30,13 @@ class ChatState {
   }) {
     return ChatState(
       messages: messages ?? this.messages,
-      selectedMessageId: deselect ? null : selectedMessageId ?? this.selectedMessageId,
+      selectedMessageId:
+          deselect ? null : selectedMessageId ?? this.selectedMessageId,
     );
   }
 }
 
+/// The controller for the chat screen.
 @riverpod
 class ChatController extends _$ChatController {
   Timer? _timer;
@@ -57,11 +66,12 @@ class ChatController extends _$ChatController {
     log('Fetching chat messages...');
     // Reading the provider's future which will be handled by the UI.
     final youTubeService = await ref.read(youTubeServiceProvider.future);
-    final newState = await AsyncValue.guard(() => youTubeService.getChatMessages());
+    final newState = await AsyncValue.guard(youTubeService.getChatMessages);
     state = state.copyWith(messages: newState);
     log('State updated with new messages.');
   }
 
+  /// Selects a message.
   void selectMessage(String messageId) {
     if (state.selectedMessageId == messageId) {
       // If the same message is tapped again, deselect it.

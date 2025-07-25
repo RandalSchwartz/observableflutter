@@ -16,7 +16,7 @@ void main() {
 
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: Center(
               child: ChatBubble(message: message),

@@ -32,7 +32,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            youTubeServiceProvider.overrideWith((ref) async => mockYouTubeService),
+            youTubeServiceProvider
+                .overrideWith((ref) async => mockYouTubeService),
           ],
           child: const MaterialApp(
             home: ChatScreen(),
@@ -57,7 +58,8 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            youTubeServiceProvider.overrideWith((ref) async => mockYouTubeService),
+            youTubeServiceProvider
+                .overrideWith((ref) async => mockYouTubeService),
           ],
           child: const MaterialApp(
             home: ChatScreen(),
@@ -71,7 +73,8 @@ void main() {
       expect(find.widgetWithText(ElevatedButton, 'Retry'), findsOneWidget);
 
       // Simulate tapping the retry button
-      when(() => mockYouTubeService.getChatMessages()).thenAnswer((_) async => []);
+      when(() => mockYouTubeService.getChatMessages())
+          .thenAnswer((_) async => []);
       await tester.tap(find.widgetWithText(ElevatedButton, 'Retry'));
       await tester.pumpAndSettle();
 
