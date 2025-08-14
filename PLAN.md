@@ -2,7 +2,7 @@
 
 - [x] Step 1: Add Dependencies for Image Rendering and File System Access
 - [x] Step 2: Create a Service to Handle Image Conversion and Saving
-- [ ] Step 3: Integrate the Service with the Chat Controller
+- [x] Step 3: Integrate the Service with the Chat Controller
 - [ ] Step 4: Update the UI to Trigger Image Saving
 - [ ] Step 5: Add Error Handling and User Feedback
 

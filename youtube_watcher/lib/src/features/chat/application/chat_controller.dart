@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:youtube_watcher/src/features/chat/application/chat_providers.dart';
+import 'package:youtube_watcher/src/features/chat/application/screenshot_service.dart';
 import 'package:youtube_watcher/src/features/chat/data/chat_message.dart';
 
 part 'chat_controller.g.dart';
@@ -72,12 +74,14 @@ class ChatController extends _$ChatController {
   }
 
   /// Selects a message.
-  void selectMessage(String messageId) {
+  Future<void> selectMessage(String messageId, GlobalKey key) async {
     if (state.selectedMessageId == messageId) {
       // If the same message is tapped again, deselect it.
       state = state.copyWith(deselect: true);
     } else {
       state = state.copyWith(selectedMessageId: messageId);
+      final screenshotService = ref.read(screenshotServiceProvider);
+      await screenshotService.captureAndSave(key);
     }
   }
 }

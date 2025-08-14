@@ -4,12 +4,19 @@ import 'package:youtube_watcher/src/features/chat/application/chat_controller.da
 import 'package:youtube_watcher/src/features/chat/presentation/widgets/chat_bubble.dart';
 
 /// The screen that displays the live chat messages.
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   /// Creates the chat screen.
   const ChatScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends ConsumerState<ChatScreen> {
+  final Map<String, GlobalKey> _keys = {};
+
+  @override
+  Widget build(BuildContext context) {
     final chatState = ref.watch(chatControllerProvider);
     final chatController = ref.read(chatControllerProvider.notifier);
 
@@ -27,11 +34,16 @@ class ChatScreen extends ConsumerWidget {
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];
+              _keys.putIfAbsent(message.id, () => GlobalKey());
+              final key = _keys[message.id]!;
               return GestureDetector(
-                onTap: () => chatController.selectMessage(message.id),
-                child: ChatBubble(
-                  message: message,
-                  isSelected: chatState.selectedMessageId == message.id,
+                onTap: () => chatController.selectMessage(message.id, key),
+                child: RepaintBoundary(
+                  key: key,
+                  child: ChatBubble(
+                    message: message,
+                    isSelected: chatState.selectedMessageId == message.id,
+                  ),
                 ),
               );
             },
