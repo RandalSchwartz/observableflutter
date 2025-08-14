@@ -25,9 +25,10 @@ The YouTube Live Chat Viewer is a desktop application that allows users to monit
 ### 3.2. Live Chat Screen
 
 - A real-time display of chat messages from the specified YouTube live stream.
-- Each message should show the author's display name, profile picture, and the message content.
+- Each message should show the author's display name, a profile picture, and the message content.
 - The chat should auto-scroll as new messages arrive.
 - Users can select a message by tapping on it, which will highlight it visually.
+- Tapping on a chat message will save an image of that message to a file.
 - Tapping the same message again will deselect it.
 
 ### 3.3. Error Handling
