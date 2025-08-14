@@ -6,9 +6,11 @@ part of 'chat_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatControllerHash() => r'ea802ca793744e7bb45b4958bace32010bfd937c';
+String _$chatControllerHash() => r'daf942e172cd30bcc92e43555be1eec251183e80';
 
-/// See also [ChatController].
+/// The controller for the chat screen.
+///
+/// Copied from [ChatController].
 @ProviderFor(ChatController)
 final chatControllerProvider =
     AutoDisposeNotifierProvider<ChatController, ChatState>.internal(
