@@ -1,6 +1,6 @@
 ## Progress Checklist
 
-- [ ] Step 1: Add Dependencies for Image Rendering and File System Access
+- [x] Step 1: Add Dependencies for Image Rendering and File System Access
 - [ ] Step 2: Create a Service to Handle Image Conversion and Saving
 - [ ] Step 3: Integrate the Service with the Chat Controller
 - [ ] Step 4: Update the UI to Trigger Image Saving
