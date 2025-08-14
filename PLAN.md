@@ -37,12 +37,14 @@ This document outlines the steps to implement the feature of saving a chat messa
 3.  **Testing:**
     *   Write unit tests for the `ChatController` to verify that it calls the `ScreenshotService` when a message is selected.
 
-### Step 4: Update the UI to Trigger Image Saving
+### Step 4: Update the UI to Trigger Image Saving and Deleting
 
 1.  **Action:** Wrap the `ChatBubble` widget in the `ChatScreen` with a `RepaintBoundary` and a `GlobalKey`.
 2.  **Action:** Pass the `GlobalKey` to the `ChatController` when a message is tapped, so the `ScreenshotService` can use it to capture the correct widget.
-3.  **Testing:**
+3.  **Action:** Update the `ChatController` to delete the saved image when the message is deselected.
+4.  **Testing:**
     *   Write widget tests to ensure that tapping a `ChatBubble` triggers the image saving logic.
+    *   Write unit tests to ensure that deselecting a message deletes the image file.
 
 ### Step 5: Add Error Handling and User Feedback
 

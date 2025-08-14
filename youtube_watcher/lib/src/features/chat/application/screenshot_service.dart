@@ -25,6 +25,15 @@ class ScreenshotService {
     final file = File('${directory.path}/image.png');
     await file.writeAsBytes(img.encodePng(imageToSave));
   }
+
+  /// Deletes the saved image file.
+  Future<void> deleteImage() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/image.png');
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
 }
 
 @riverpod

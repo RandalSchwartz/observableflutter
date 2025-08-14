@@ -75,12 +75,13 @@ class ChatController extends _$ChatController {
 
   /// Selects a message.
   Future<void> selectMessage(String messageId, GlobalKey key) async {
+    final screenshotService = ref.read(screenshotServiceProvider);
     if (state.selectedMessageId == messageId) {
       // If the same message is tapped again, deselect it.
       state = state.copyWith(deselect: true);
+      await screenshotService.deleteImage();
     } else {
       state = state.copyWith(selectedMessageId: messageId);
-      final screenshotService = ref.read(screenshotServiceProvider);
       await screenshotService.captureAndSave(key);
     }
   }

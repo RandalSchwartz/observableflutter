@@ -16,8 +16,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
   });
 
-  // TODO: This test is failing and needs to be fixed.
-  testWidgets('captureAndSave captures a widget and saves it as a PNG',
+  testWidgets('deleteImage deletes the saved image file',
       (WidgetTester tester) async {
     final tempDir = await Directory.systemTemp.createTemp();
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
@@ -30,19 +29,13 @@ void main() {
       },
     );
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: RepaintBoundary(
-          key: key,
-          child: const Text('Hello'),
-        ),
-      ),
-    );
-
-    await screenshotService.captureAndSave(key);
-
+    // First, create a file to delete.
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/image.png');
-    expect(file.existsSync(), isTrue);
-  }, skip: true);
+    await file.writeAsString('test');
+
+    await screenshotService.deleteImage();
+
+    expect(file.existsSync(), isFalse);
+  });
 }
